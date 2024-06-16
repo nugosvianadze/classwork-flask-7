@@ -31,10 +31,16 @@
             </ul>
         </div>
     </nav>
-
-    {% block body %}
-    {% endblock %}
-
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block body %}{% endblock %}
     {% block script %}
     {% endblock %}
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
