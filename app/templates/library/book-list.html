@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+    Book List
+{% endblock %}
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center">Book List</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Book Title</h5>
+                        <p class="card-text">Author: John Doe</p>
+                        <a href="#" class="btn btn-primary">Read Reviews</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat for more books -->
+        </div>
+    </div>
+{% endblock %}
