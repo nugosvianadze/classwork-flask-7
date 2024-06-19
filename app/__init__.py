@@ -1,4 +1,7 @@
 from flask import Flask
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+
 from app.urls import register_blueprints
 from app.config import Config
 from app.user.models import *
@@ -11,11 +14,18 @@ from os import environ
 
 def create_app():
     app = Flask(__name__)
-
     register_config(app)
     register_blueprints(app)
     register_extensions(app)
+    # register_admin(app)
     return app
+
+
+def register_admin(app):
+    admin = Admin(app, name='microblog', template_mode='bootstrap4')
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Review, db.session))
+    admin.add_view(ModelView(Book, db.session))
 
 
 def register_extensions(app):

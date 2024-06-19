@@ -16,6 +16,7 @@ def load_user(user):
 
 
 @user_bp.route('/')
+@login_required
 def home():
     return render_template('user/user-profile.html')
 
@@ -31,8 +32,9 @@ def login():
             if not user:
                 flash('Incorrect Credentials, Try again')
                 return render_template('user/login.html', form=form)
-            session['email'] = user.email
-            session['user_id'] = user.id
+            # session['email'] = user.email
+            # session['user_id'] = user.id
+            login_user(user)
             return redirect(url_for('user.home'))
         return render_template('user/login.html', form=form)
     return render_template('user/login.html', form=form)
@@ -59,5 +61,10 @@ def register():
 
 
 @user_bp.route('/logout')
+@login_required
 def logout():
+    # session.pop('user_id', None)
+    # session.pop('email', None)
+    logout_user()
+    flash('Successfully Logged Out')
     return redirect(url_for('user.login'))

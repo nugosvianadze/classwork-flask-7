@@ -11,6 +11,7 @@ class Book(db.Model):
     title: Mapped[str]
     author: Mapped[str]
     year: Mapped[int] = mapped_column(SmallInteger)
+    reviews = db.relationship('Review', backref='book', lazy='dynamic')
 
     def __str__(self):
         return self.title

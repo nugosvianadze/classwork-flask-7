@@ -5,12 +5,13 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = mapped_column(Integer, primary_key=True)
     username = mapped_column(String(80))
     email = mapped_column(String(120), unique=True, nullable=False)
     password = mapped_column(String(120), nullable=False)
+    reviews = db.relationship('Review', backref='user', lazy='dynamic')
 
     def __repr__(self):
         return '<User %r>' % self.username
