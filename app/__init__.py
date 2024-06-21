@@ -17,13 +17,13 @@ def create_app():
     register_config(app)
     register_blueprints(app)
     register_extensions(app)
-    # register_admin(app)
+    register_admin(app)
     return app
 
 
 def register_admin(app):
     admin = Admin(app, name='microblog', template_mode='bootstrap4')
-    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(User, db.session, endpoint='/users'))
     admin.add_view(ModelView(Review, db.session))
     admin.add_view(ModelView(Book, db.session))
 
@@ -41,3 +41,6 @@ def register_config(app):
         FlaskEnv.TESTING.value: Config
     }
     app.config.from_object(env[environ.get('FLASK_ENV')])
+
+
+application = create_app()
