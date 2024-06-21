@@ -29,11 +29,9 @@ def login():
         if form.validate_on_submit():
             email = form.email.data
             password = form.password.data
-            user = User.query.filter_by(email=email).first()
-            if not user or not checkpw(password.encode('utf-8'), user.password):
-                flash('Invalid Credentials! Try Again')
+            user = User.check_credentials(email, password)
+            if not user:
                 return render_template('user/login.html', form=form)
-            print(user)
             # session['email'] = user.email
             # session['user_id'] = user.id
             login_user(user)
@@ -54,10 +52,7 @@ def register():
             if user:
                 flash('User With This Email Already Exist')
                 return render_template('user/registration.html', form=form)
-            hashed_password = hashpw(password.encode('utf-8'), gensalt())
-
-            new_user = User(username=username,
-                            email=email, password=hashed_password)
+            new_user = User(username, email, password)
             db.session.add(new_user)
             db.session.commit()
             return redirect(url_for('user.login'))

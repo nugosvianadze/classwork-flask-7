@@ -1,3 +1,4 @@
+from bcrypt import hashpw, gensalt, checkpw
 from flask_login import UserMixin
 
 from app.extensions import db
@@ -12,6 +13,15 @@ class User(db.Model):
     email = mapped_column(String(120), unique=True, nullable=False)
     password = mapped_column(String(120), nullable=False)
     reviews = db.relationship('Review', backref='user', lazy='dynamic')
+
+    @staticmethod
+    def set_password(password):
+        return hashpw(password.encode('utf-8'), gensalt())
+
+    def __init__(self, username, email, password):
+        self.username = username
+        self.email = email
+        self.password = self.set_password(password)
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -36,3 +46,10 @@ class User(db.Model):
             return str(self.id)
         except AttributeError:
             raise NotImplementedError("No `id` attribute - override `get_id`") from None
+
+    @classmethod
+    def check_credentials(cls, email, password):
+        user = User.query.filter_by(email=email).first()
+        if not user or not checkpw(password.encode('utf-8'), user.password):
+            return None
+        return user

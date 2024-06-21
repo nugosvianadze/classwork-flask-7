@@ -7,7 +7,7 @@ from .models import Book, Review
 from app.user.models import User
 from app.extensions import db
 
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 template_folder = os.path.abspath('app/templates')
 library_bp = Blueprint('library', __name__,
@@ -20,12 +20,14 @@ def home():
 
 
 @library_bp.route('/book-list')
+@login_required
 def book_list():
     books = db.session.query(Book).all()
     return render_template('library/book-list.html', books=books)
 
 
 @library_bp.route('/book-review/<int:book_id>', methods=['GET', 'POST'])
+@login_required
 def book_review(book_id: int):
     form = ReviewCreateForm()
     book = db.session.get(Book, book_id)
@@ -42,6 +44,7 @@ def book_review(book_id: int):
 
 
 @library_bp.route('/delete-review/<int:review_id>')
+@login_required
 def delete_review(review_id: int):
     review = db.session.get(Review, review_id)
     db.session.delete(review)

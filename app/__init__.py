@@ -21,8 +21,8 @@ def create_app():
 
     with app.app_context():
         from app.extensions import db
-        print('deleting')
-        db.drop_all()
+        # print('deleting')
+        # db.drop_all()
         print('Creating database tables...')
         db.create_all()
         print('Database tables created.')
