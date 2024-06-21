@@ -8,3 +8,4 @@ email-validator
 python-dotenv
 faker
 gunicorn
+bcrypt

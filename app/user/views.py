@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
+from bcrypt import hashpw, checkpw, gensalt
 
 from .models import User
 from app.extensions import db, login_manager
@@ -28,10 +29,11 @@ def login():
         if form.validate_on_submit():
             email = form.email.data
             password = form.password.data
-            user = User.query.filter_by(email=email, password=password).first()
-            if not user:
-                flash('Incorrect Credentials, Try again')
+            user = User.query.filter_by(email=email).first()
+            if not user or not checkpw(password.encode('utf-8'), user.password):
+                flash('Invalid Credentials! Try Again')
                 return render_template('user/login.html', form=form)
+            print(user)
             # session['email'] = user.email
             # session['user_id'] = user.id
             login_user(user)
@@ -52,7 +54,10 @@ def register():
             if user:
                 flash('User With This Email Already Exist')
                 return render_template('user/registration.html', form=form)
-            new_user = User(username=username, email=email, password=password)
+            hashed_password = hashpw(password.encode('utf-8'), gensalt())
+
+            new_user = User(username=username,
+                            email=email, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
             return redirect(url_for('user.login'))

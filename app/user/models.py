@@ -5,7 +5,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     __tablename__ = 'users'
     id = mapped_column(Integer, primary_key=True)
     username = mapped_column(String(80))
@@ -18,3 +18,21 @@ class User(db.Model, UserMixin):
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_authenticated(self):
+        return self.is_active
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        try:
+            return str(self.id)
+        except AttributeError:
+            raise NotImplementedError("No `id` attribute - override `get_id`") from None
